@@ -9,7 +9,7 @@ import React from "react";
 import Users from "./Users";
 import classes from "./Users.module.css"
 import Spinner from "../common/spinner/Spinner";
-import {withAuthRedirect} from "../../hoc/withAuthRedirect";
+
 import {compose} from "redux";
 
 
@@ -68,7 +68,6 @@ const mapDispatchObj = {
 
 export  default  compose(
     connect(mapStateToProps, mapDispatchObj),
-    withAuthRedirect
 )(UsersAPIComponent)
 
 

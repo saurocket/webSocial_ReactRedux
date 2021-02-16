@@ -3,10 +3,21 @@
 import classes from './Login.module.css'
 import FormLogin from "./FormLogin/FormLogin";
 import {reduxForm} from "redux-form";
-const Login= () => {
+import {connect} from "react-redux";
+import {loginUser} from "../../redux/authReduce";
+import {Redirect} from "react-router-dom";
+const Login= (props) => {
+
     const onSubmit = (fromData) => {
-        console.log(fromData);
+      const {email, password, rememberMe} = fromData
+       console.log(email, password, rememberMe);
+       props.loginUser(email, password, rememberMe)
     }
+
+    if (props.isAuth) {
+        return <Redirect to={"/profile"}/>
+    }
+
     return (
        <div>
            <h1>Form</h1>
@@ -14,17 +25,18 @@ const Login= () => {
        </div>
     )
 }
-
-
-
-
 const LoginReduxForm  = reduxForm({
-    form: 'login', // имя формы в state (state.form.post)
+    form: 'login',
 })(FormLogin);
 
 
+const mapStateToProps = (state) => {
+    return {isAuth: state.auth.isAuth}
+
+}
 
 
-export default Login;
+
+export default connect(mapStateToProps, {loginUser})(Login)
 
 

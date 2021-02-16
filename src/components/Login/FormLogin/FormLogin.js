@@ -9,8 +9,8 @@ const FormLogin = (props) => {
             <form onSubmit={props.handleSubmit} className={classes.form}>
                 <div>
                     <Field
-                        placeholder={'login'}
-                        name={"login"}
+                        placeholder={'email'}
+                        name={"email"}
                         component={Input}
                         validate={[required]}
                     />
@@ -19,6 +19,7 @@ const FormLogin = (props) => {
                     <Field
                         placeholder={'password'}
                         name={"password"}
+                        type="password"
                         component={Input}
                         validate={[required]}
 
@@ -30,6 +31,12 @@ const FormLogin = (props) => {
                 <div>
                     <button>LoginForm</button>
                 </div>
+
+                {props.error && <div className={classes.formSummaryError}>
+                    {props.error}
+                </div>}
+
+
             </form>
     )
 }

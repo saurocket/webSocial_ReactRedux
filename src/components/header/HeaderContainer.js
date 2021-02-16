@@ -1,16 +1,12 @@
 import React from 'react';
 import Header from "./Header";
 import {connect} from "react-redux";
-import {getAuthMe} from "../../redux/authReduce";
+import {logOutUser} from "../../redux/authReduce";
 import {compose} from "redux";
 
 
 
 class HeaderContainer extends React.Component {
-
-    componentDidMount() {
-        this.props.getAuthMe()
-    }
 
     render() {
         return <Header
@@ -30,5 +26,5 @@ const mapStateToProps = (state) => {
 
 
 
-const NavPageContainer = connect(mapStateToProps, {getAuthMe})(HeaderContainer)
+const NavPageContainer = connect(mapStateToProps, {logOutUser})(HeaderContainer)
 export default NavPageContainer

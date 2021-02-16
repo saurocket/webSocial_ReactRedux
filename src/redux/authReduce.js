@@ -1,14 +1,13 @@
 import {statusMeAPI} from "../API/api";
+import {stopSubmit} from "redux-form";
 
 const SET_USER_DATA = 'SET_USER_DATA';
-const LOGIN_USER = 'LOGIN_USER';
 
 let initialState = {
     userId: null,
     email: null,
     login: null,
     isAuth: false,
-    loginUser: {email: null, password: null, rememberMe: false, captcha: false}
 }
 
 export const authReducer = (state=initialState, action) => {
@@ -16,51 +15,61 @@ export const authReducer = (state=initialState, action) => {
         case SET_USER_DATA: {
             return  {
                 ...state,
-                ...action.data,
-                isAuth: true
+                ...action.payload,
             };
-        }
-        case LOGIN_USER: {
-            return{
-                ...state, ...state.loginUser, ...state.loginUser.data
-            }
         }
         default:  return state;
     }
 }
 
-export const setAuthUserData = (userId, email, login) => {
+ const setAuthUserData = (userId, email, login, isAuth) => {
     return ({
         type: SET_USER_DATA,
-        data: {userId, email, login}
+        payload: {userId, email, login, isAuth}
     });
 }
-const  getLoginUserData = (data) => {
-    return ({
-        type: LOGIN_USER, data
-    })
-}
-export const loginUser = (data) => {
+
+export const loginUser = (email, password, rememberMe) => {
     return (
         (dispatch) => {
-            statusMeAPI.loginMe(data).then(respons => {
-                if (respons.resultCode === 0){
-                    dispatch(getLoginUserData(data));
+            statusMeAPI.login(email, password, rememberMe).then(respons => {
+
+
+
+                if (respons.data.resultCode === 0){
+                    dispatch(getAuthMe());
+                }else{
+                    const message = respons.data.messages[0].length > 0 ?
+                        respons.data.messages[0]:
+                        "some Error"
+                    ;
+                    dispatch(stopSubmit("login", {_error: message}));
                 }
             })
         }
     )
 }
-
+export const logOutUser= () => {
+    return (
+        (dispatch) => {
+            statusMeAPI.logOut().then(respons => {
+                if (respons.data.resultCode === 0){
+                    dispatch(setAuthUserData(null, null, null, false));
+                }
+            })
+        }
+    )
+}
 export const getAuthMe = () => {
     return (
         (dispatch) => {
-            statusMeAPI.statusMe().then(data=> {
+            return  statusMeAPI.statusMe().then(data=> {
                 if (data.resultCode === 0) {
                     const {id, email, login} = data.data
-                    dispatch(setAuthUserData(id, email, login));
+                    dispatch(setAuthUserData(id, email, login, true));
                 }
             });
+
         }
     )
 }
